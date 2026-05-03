@@ -19,16 +19,7 @@ function startSession() {
   updateHUD();
   save(G);
   startTimer();
-
-  // Notif mendekati siklus 17
-  if (G) {
-    var siklus = ((G.sessionCount - 1) % CFG.CYCLE) + 1;
-    if (siklus >= 15 && G.items.flip5 > 0) {
-      setTimeout(function() {
-        showToast('⚠️ Siklus hampir habis! Segera pakai Balik 5 Detik sebelum siklus ke-1!', 5000);
-      }, 1500);
-    }
-  }
+ 
 }
 
 function buildLineup() {
@@ -39,7 +30,6 @@ function buildLineup() {
     d.className = 'ls';
     d.id = 'ls' + i;
     d.innerHTML = '<span class="sn">' + i + '</span>';
-    if (i === 16) d.style.display = 'none';
     g.appendChild(d);
   }
   document.getElementById('slot-count').textContent = '0 / 15';
@@ -58,12 +48,16 @@ function buildBoard() {
   var pool;
   var roll = Math.random();
   if (roll < 0.15) {
+    // 15% — 16 kartu target (mudah, jarang)
     pool = rnd(targetAll.slice(0,16).concat(others.slice(0,8)));
   } else if (roll < 0.40) {
+    // 25% — 12 kartu target
     pool = rnd(targetAll.slice(0,12).concat(others.slice(0,12)));
   } else if (roll < 0.70) {
+    // 30% — 8 kartu target (harus shuffle)
     pool = rnd(targetAll.slice(0,8).concat(others.slice(0,16)));
   } else {
+    // 35% — hanya 5 kartu target (sangat susah)
     pool = rnd(targetAll.slice(0,5).concat(others.slice(0,19)));
   }
   G.boardIds = pool.slice(0, CFG.BOARD).map(function(m) { return m.id; });
@@ -89,6 +83,7 @@ function renderBoard() {
       '</div>' +
       '<div class="cf cf-back team-' + m.team + '">' +
         '<img src="' + imgO(m) + '" alt="' + m.name + '" loading="lazy" onerror="this.src=\'https://placehold.co/180x250/333/fff?text=?\'">' +
+        '</div>' +
       '</div>';
     if (!inLU) {
       div.addEventListener('click', (function(i, id, member, el) {
@@ -117,12 +112,14 @@ function onCard(idx, mid, member, el) {
     }
 
     if (member.team !== G.targetTeam) {
+      // Salah tim → tutup kembali
       el.classList.add('wp');
       setTimeout(function() {
         el.classList.remove('flipped', 'wp');
         flippedSet.delete(idx);
       }, 800);
     } else {
+      
       el.classList.add('cp');
       setTimeout(function() {
         el.classList.remove('cp');
@@ -143,7 +140,7 @@ function addToLineup(mid, member, el) {
       '<img src="' + imgO(member) + '" alt="' + member.name + '" onerror="this.src=\'https://placehold.co/60x80/333/fff?text=?\'">' +
       '<div class="ls-name">' + member.name.split(' ')[0] + '</div>';
   }
-  document.getElementById('slot-count').textContent = filledSlots.length + ' / 15';
+  document.getElementById('slot-count').textContent = filledSlots.length + ' / 15';;
   G.collection[mid] = (G.collection[mid] || 0) + 1;
   save(G);
   if (filledSlots.length >= 15) onSuccess();
@@ -185,7 +182,7 @@ function onSuccess() {
     G.maxShows = randShows();
   }
   G.targetTeam = randTeam();
-  save(G);
+ save(G);
   updateHUD();
   buildAlbum();
   buildLeaderboard();
@@ -240,48 +237,37 @@ function revealOneTarget() {
 function shuffleBoard() {
   flippedSet = new Set();
   shuffleCount++;
-  var targetAll = rnd(MEMBERS.filter(function(m) { return m.team === G.targetTeam; }));
-  var others    = rnd(MEMBERS.filter(function(m) { return m.team !== G.targetTeam; }));
+  var remaining = MEMBERS.filter(function(m) { return !filledSlots.includes(m.id); });
+  var target    = rnd(remaining.filter(function(m) { return m.team === G.targetTeam; }));
+  var others    = rnd(remaining.filter(function(m) { return m.team !== G.targetTeam; }));
   var pool;
   var roll = Math.random();
   if (roll < 0.33) {
-    pool = rnd(targetAll.slice(0,16).concat(others.slice(0,8)));
+    pool = rnd(target.slice(0,16).concat(others.slice(0,8)));
   } else if (roll < 0.66) {
-    pool = rnd(targetAll.slice(0,15).concat(others.slice(0,9)));
+    pool = rnd(target.slice(0,15).concat(others.slice(0,9)));
   } else {
-    pool = rnd(targetAll.slice(0,14).concat(others.slice(0,10)));
+    pool = rnd(target.slice(0,14).concat(others.slice(0,10)));
   }
   G.boardIds = pool.slice(0, CFG.BOARD).map(function(m) { return m.id; });
   renderBoard();
+
 }
 
 function giveOshiItem() {
-  var siklus = ((G.sessionCount - 1) % CFG.CYCLE) + 1;
-
-  // Siklus 1 tapi item dari siklus lalu belum dipakai
-  if (siklus === 1 && G._oshiItemUnused) {
-    G._oshiItemUnused = false;
-    save(G);
-    showToast('Kamu tidak dapat Balik 5 Detik, karena belum dipakai sampai siklus ke-1 😢', 6000);
-    return;
-  }
-
   if (G.items.flip5 >= CFG.MAX_ITEMS) {
     showToast('Oshi ditemukan! (Item sudah maks 2)');
     return;
   }
-
   G.items.flip5 = Math.min(G.items.flip5 + 1, CFG.MAX_ITEMS);
-  G._oshiItemUnused = true; // tandai item belum dipakai
   save(G);
   updateHUD();
-  showToast('Oshi ditemukan! Item Balik 5 Detik +1 ✨');
+  showToast('Oshi ditemukan! Item Balik 5 Detik +1');
 }
 
 function useFlip5() {
   if (G.items.flip5 <= 0) { showToast('Item habis!'); return; }
   G.items.flip5--;
-  G._oshiItemUnused = false; // tandai sudah dipakai
   save(G);
   updateHUD();
   revealActive = true;
