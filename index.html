@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#0C0E1A">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <title>JKT48 Line Up Rush</title><!-- ← Ganti judul tab browser di sini -->
+  <title>JKT48 Line Up Rush</title>
   <link rel="stylesheet" href="styles/main.css">
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
@@ -45,7 +45,7 @@
     <input class="fi" id="re-u" type="text" placeholder="buat username unikmu..." maxlength="20" autocomplete="off">
     <label class="fl">Pilih Oshi-mu</label>
     <div class="oshi-wrap">
-      <div id="oshi-list"></div><!-- diisi otomatis dari data/members.js -->
+      <div id="oshi-list"></div>
     </div>
     <div class="fe" id="re-err"></div>
     <button class="btn-prim" onclick="doRegister()">BUAT AKUN &amp; MAIN!</button>
@@ -57,7 +57,7 @@
      TOP BAR (muncul saat di dalam game)
 ══════════════════════════════════════════════════════════ -->
 <div id="top-bar" style="display:none">
-  <!-- ↓ Ganti nama pendek game di top bar sini -->
+  
   <div class="hud-title">JKT48 RUSH</div>
   <div class="hud-chips">
     <div class="hc">Hari <b id="hd">1</b></div>
@@ -67,22 +67,19 @@
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════════════════
-     BOTTOM NAV (muncul saat di dalam game, tersembunyi saat bermain)
-     ↓ Ganti nama menu navigasi di sini
-══════════════════════════════════════════════════════════ -->
+
 <div id="bottom-nav" style="display:none">
   <button class="bnb" data-p="jeda"    onclick="navTo('jeda')">
     <span class="ni">🏠</span>Lobby
   </button>
   <button class="bnb" data-p="kabesha" onclick="navTo('kabesha')">
-    <span class="ni">📚</span>Member<!-- ← Ganti nama menu Kabesha -->
+    <span class="ni">📚</span>Member
   </button>
   <button class="bnb" data-p="gacha"   onclick="navTo('gacha')">
-    <span class="ni">🎴</span>Gacha<!-- ← Ganti nama menu Gacha -->
+    <span class="ni">🎴</span>Gacha
   </button>
   <button class="bnb" data-p="profil"  onclick="navTo('profil')">
-    <span class="ni">👤</span>Profil<!-- ← Ganti nama menu Profil -->
+    <span class="ni">👤</span>Profil
   </button>
 </div>
 
@@ -145,20 +142,17 @@
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════════════════
-     PAGE: KABESHA (Album koleksi)
-     ↓ Ganti judul halaman & nama filter tim di sini
-══════════════════════════════════════════════════════════ -->
+
 <div class="pv" id="page-kabesha">
   <div class="game-content">
     <div class="kabesha-inner">
       <div class="kab-header">
-        <h2>📚 KOLEKSI MEMBER</h2><!-- ← Ganti judul halaman kabesha -->
+        <h2>📚 KOLEKSI MEMBER</h2>
         <button class="btn-exchange" id="btn-exchange" onclick="doExchange()" disabled>
           Tukar Duplikat
         </button>
       </div>
-      <!-- Filter tim — ganti teks nama tim di sini -->
+      
       <div class="afb-bar">
         <button class="afb all active" onclick="filtAlbum('all',this)">Semua</button>
         <button class="afb love"       onclick="filtAlbum('love',this)">Team Love 💗</button>
@@ -243,27 +237,25 @@
   <button class="btn-ov" id="btn-cancel-next">SHOW SELANJUTNYA ▶</button>
 </div>
 
-<!-- Toast notifikasi -->
+
 <div id="toast"></div>
 
-<!-- ══════════════════════════════════════════════════════════
-     SCRIPTS — urutan loading PENTING, jangan diubah
-══════════════════════════════════════════════════════════ -->
+
 <script src="scripts/firebase.js"></script>
-<script src="data/members.js"></script>   <!-- 1. Data member & gambar -->
-<script src="models/state.js"></script>    <!-- 2. Konstanta & save/load -->
-<script src="scripts/router.js"></script>  <!-- 3. Navigasi halaman -->
-<script src="scripts/ui.js"></script>      <!-- 4. HUD, album, gacha, profil -->
-<script src="scripts/game.js"></script>    <!-- 5. Logika show & timer -->
-<script src="scripts/login.js"></script>   <!-- 6. Login & register -->
-<script src="scripts/logout.js"></script>  <!-- 7. Logout -->
+<script src="data/members.js"></script>   
+<script src="models/state.js"></script>    
+<script src="scripts/router.js"></script> 
+<script src="scripts/ui.js"></script>      
+<script src="scripts/game.js"></script>    
+<script src="scripts/login.js"></script>  
+<script src="scripts/logout.js"></script>  
 
 <script>
-  // ── BOOT: jalankan saat halaman pertama kali dibuka ────────
+ 
   window.addEventListener('DOMContentLoaded', () => {
-    buildOshiList(); // isi daftar oshi dari members.js
+    buildOshiList(); 
 
-    // Auto-login jika ada sesi tersimpan
+    
     const lu = lastUser();
     if (lu) {
       const sv = load(lu);

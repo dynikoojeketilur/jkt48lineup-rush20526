@@ -24,7 +24,7 @@ function buildOshiList() {
   });
 }
 
-// Proses login
+
 function doLogin() {
   const u   = document.getElementById('li-u').value.trim();
   const err = document.getElementById('li-err');
@@ -46,7 +46,7 @@ function doLogin() {
   enterGame();
 }
 
-// Proses register
+
 function doRegister() {
   const u   = document.getElementById('re-u').value.trim();
   const sel = document.getElementById('oshi-list').querySelector('.oi.selected');
@@ -75,9 +75,8 @@ function doRegister() {
   enterGame();
 }
 
-// Masuk ke game setelah login/register berhasil
+
 function enterGame() {
-  // Kalau sedang playing waktu keluar, kembalikan ke jeda
   if (G.phase === 'playing') {
     G.phase = 'jeda';
     save(G);

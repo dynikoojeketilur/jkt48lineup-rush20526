@@ -1,10 +1,3 @@
-/**
- * ============================================================
- * MODELS/STATE.JS
- * Konstanta konfigurasi game dan fungsi save/load data pemain.
- * ============================================================
- */
-
 const CFG = {
   SLOTS:      15,
   BOARD:      24,
@@ -43,7 +36,7 @@ function newState(username, oshiId) {
   };
 }
 
-// SAVE — simpan ke localStorage + cloud Firebase
+
 function save(g) {
   try {
     localStorage.setItem(SK(g.username), JSON.stringify(g));
@@ -53,7 +46,7 @@ function save(g) {
   } catch(e) { console.warn('Gagal simpan:', e); }
 }
 
-// LOAD — coba dari cloud dulu, fallback ke localStorage
+
 async function loadPlayer(u) {
   try {
     if (typeof loadFromCloud === 'function') {
@@ -71,7 +64,7 @@ async function loadPlayer(u) {
   } catch(e) { return null; }
 }
 
-// LOAD SYNC — untuk fungsi yang tidak async (fallback localStorage)
+
 function load(u) {
   try {
     var r = localStorage.getItem(SK(u));

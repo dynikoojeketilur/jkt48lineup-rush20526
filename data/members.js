@@ -1,23 +1,3 @@
-/**
- * ============================================================
- * DATA/MEMBERS.JS
- * Edit nama member dan path gambar di sini.
- *
- * img_closed : foto TERTUTUP (kartu belum dibuka)
- * img_open   : foto TERBUKA  (kabesha/full photo)
- *
- * Cara ganti gambar:
- *   1. Taruh file foto di folder assets/closed/ dan assets/open/
- *   2. Ubah nilai img_closed dan img_open sesuai nama file
- *   Contoh: img_closed: 'assets/closed/namafile.jpg'
- *
- * Nama member di sini otomatis muncul di:
- *   - Kartu show
- *   - Album kabesha
- *   - Pilihan oshi saat daftar
- * ============================================================
- */
-
 const MEMBERS = [
 
   // ============================================================
@@ -78,21 +58,21 @@ const MEMBERS = [
   { id:'pas15',  name:'Victoria Kimberly',       team:'passion', img_closed:'assets/closed/pas15.jpg',  img_open:'assets/open/pas15.jpg'  },
 ];
 
-// Label nama tim (ganti di sini kalau mau ubah nama tim)
+
 const TEAM_LABEL = {
   love:    'Team Love',
   dream:   'Team Dream',
   passion: 'Team Passion',
 };
 
-// Warna aksen per tim
+
 const TEAM_COLOR = {
   love:    '#FF69B4',
   dream:   '#1E88E5',
   passion: '#FF6D00',
 };
 
-// Gambar placeholder otomatis kalau file belum ada
+
 function imgC(m) {
   return 'assets/closed/card-back.jpg';
 }

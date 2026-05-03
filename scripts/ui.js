@@ -1,12 +1,3 @@
-/**
- * ============================================================
- * SCRIPTS/UI.JS
- * HUD, toast notifikasi, album kabesha, gacha, profil,
- * leaderboard, dan halaman jeda.
- * ============================================================
- */
-
-// ── HUD (top bar info) ───────────────────────────────────────
 function updateHUD() {
   if (!G) return;
   const set = (id, val) => { const e = document.getElementById(id); if (e) e.textContent = val; };
@@ -37,7 +28,6 @@ function updateHUD() {
   if (gb) gb.disabled = G.points < CFG.GACHA_COST;
 }
 
-// ── TOAST NOTIFIKASI ─────────────────────────────────────────
 let toastTO = null;
 function showToast(msg, dur = 3000) {
   const el = document.getElementById('toast');
@@ -47,7 +37,6 @@ function showToast(msg, dur = 3000) {
   toastTO = setTimeout(() => el.classList.remove('show'), dur);
 }
 
-// ── JEDA PAGE ────────────────────────────────────────────────
 function enterJeda() {
   updateHUD();
   document.getElementById('bottom-nav').style.display = 'flex';
@@ -87,7 +76,6 @@ function doMulai() {
   gotoPage('show');
 }
 
-// ── ALBUM KABESHA ────────────────────────────────────────────
 let albFilter = 'all';
 
 function filtAlbum(t, btn) {
@@ -124,7 +112,7 @@ function buildAlbum() {
   const allOwned = MEMBERS.every(m => (G.collection[m.id] || 0) > 0);
   const hasDup   = MEMBERS.some(m  => (G.collection[m.id] || 0) > 1);
   const btn = document.getElementById('btn-exchange');
-  // Tombol aktif hanya kalau item balik 5 detik HABIS (0)
+  // Tombol aktif hanya kalau: album full, ada duplikat, DAN item flip5 habis (0)
   if (btn) btn.disabled = !(allOwned && hasDup && G.items.flip5 === 0);
 }
 
@@ -133,8 +121,9 @@ function doExchange() {
   if (!allOwned) { showToast('Kumpulkan semua member dulu!'); return; }
   const hasDup = MEMBERS.some(m => (G.collection[m.id] || 0) > 1);
   if (!hasDup) { showToast('Tidak ada duplikat!'); return; }
+  if (G.items.flip5 > 0) { showToast('Pakai dulu Balik 5 Detik di show!'); return; }
 
-  // Kurangi 1 dari yang duplikat, yang cuma 1x ikut hilang
+  // Duplikat dikurangi 1, yang cuma 1x ikut hilang
   let gained = 0;
   MEMBERS.forEach(m => {
     const s = G.collection[m.id] || 0;
@@ -156,7 +145,6 @@ function doExchange() {
   showToast(`Album ditukar! +${add} Item. Full Member ke-${G.fullKabesha}!`);
 }
 
-// ── GACHA ────────────────────────────────────────────────────
 let gachaAnim = false;
 
 function enterGacha() {
@@ -198,7 +186,6 @@ function onGachaClick() {
   }, 700);
 }
 
-// ── PROFIL ───────────────────────────────────────────────────
 function enterProfil() {
   if (!G) return;
   const oshi = MEMBERS.find(m => m.id === G.oshiId);
@@ -228,13 +215,11 @@ function enterProfil() {
   buildLeaderboard();
 }
 
-// ── LEADERBOARD — load dari Firebase cloud ───────────────────
 async function buildLeaderboard() {
   const el = document.getElementById('lb-list');
   if (!el) return;
   el.innerHTML = '<div style="color:var(--muted);font-size:.75rem;text-align:center;padding:10px">Memuat...</div>';
 
-  // Coba load dari cloud Firebase
   var allData = [];
   try {
     if (typeof loadAllPlayers === 'function') {
@@ -244,7 +229,6 @@ async function buildLeaderboard() {
     console.warn('loadAllPlayers gagal:', e);
   }
 
-  // Fallback ke localStorage kalau cloud kosong/gagal
   if (!allData || allData.length === 0) {
     allData = allUsers()
       .map(function(u) {

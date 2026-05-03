@@ -1,10 +1,4 @@
-/**
- * ============================================================
- * SCRIPTS/FIREBASE.JS
- * Koneksi ke Firebase Firestore untuk menyimpan data pemain.
- * Data tersimpan di cloud, tidak hilang meski game diupdate.
- * ============================================================
- */
+
 
 // Firebase Config — jangan diubah
 const firebaseConfig = {

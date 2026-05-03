@@ -1,9 +1,4 @@
-/**
- * ============================================================
- * SCRIPTS/LOGOUT.JS
- * Fungsi logout pemain.
- * ============================================================
- */
+
 
 function doLogout() {
   if (!confirm('Log out? Progress tersimpan, bisa masuk lagi kapan saja 👋')) return;
