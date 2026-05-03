@@ -17,7 +17,6 @@ function updateHUD() {
   set('cy',  ((G.sessionCount - 1) % 17) + 1);
   set('item-cnt', G.items.flip5);
 
-  // Target banner
   var tb = document.getElementById('target-banner');
   if (tb) {
     var namaTarget = {
@@ -29,11 +28,9 @@ function updateHUD() {
     tb.className   = 'target-banner team-' + G.targetTeam;
   }
 
-  // Item button
   const ib = document.getElementById('btn-item');
   if (ib) ib.disabled = G.items.flip5 <= 0;
 
-  // Gacha
   const set2 = (id, val) => { const e = document.getElementById(id); if (e) e.textContent = val; };
   set2('gacha-pts', G.points);
   const gb = document.getElementById('btn-gacha');
@@ -124,48 +121,40 @@ function buildAlbum() {
     g.appendChild(d);
   });
 
-  // Tombol tukar duplikat
   const allOwned = MEMBERS.every(m => (G.collection[m.id] || 0) > 0);
   const hasDup   = MEMBERS.some(m  => (G.collection[m.id] || 0) > 1);
   const btn = document.getElementById('btn-exchange');
-  if (btn) btn.disabled = !(allOwned && hasDup);
+  // Tombol aktif hanya kalau item balik 5 detik HABIS (0)
+  if (btn) btn.disabled = !(allOwned && hasDup && G.items.flip5 === 0);
 }
 
 function doExchange() {
   const allOwned = MEMBERS.every(m => (G.collection[m.id] || 0) > 0);
-  if (!allOwned) {
-    showToast('⚠️ Kumpulkan semua member dulu!');
-    return;
-  }
+  if (!allOwned) { showToast('Kumpulkan semua member dulu!'); return; }
   const hasDup = MEMBERS.some(m => (G.collection[m.id] || 0) > 1);
-  if (!hasDup) {
-    showToast('⚠️ Tidak ada duplikat!');
-    return;
-  }
+  if (!hasDup) { showToast('Tidak ada duplikat!'); return; }
 
-  // Hitung item dari duplikat
+  // Kurangi 1 dari yang duplikat, yang cuma 1x ikut hilang
   let gained = 0;
   MEMBERS.forEach(m => {
     const s = G.collection[m.id] || 0;
-    if (s > 1) { gained += s - 1; }
-    // Reset semua koleksi jadi 0 (kartu hilang semua)
-    G.collection[m.id] = 0;
+    if (s > 1) {
+      gained++;
+      G.collection[m.id] = s - 1; // kurangi 1, sisanya tetap
+    } else if (s === 1) {
+      G.collection[m.id] = 0; // yang cuma 1x ikut hilang
+    }
   });
 
-  // Tambah item
   const add = Math.min(gained, CFG.MAX_ITEMS - G.items.flip5);
   G.items.flip5 = Math.min(G.items.flip5 + add, CFG.MAX_ITEMS);
-
-  // Tambah hitungan full kabesha
   G.fullKabesha = (G.fullKabesha || 0) + 1;
 
   save(G);
   updateHUD();
   buildAlbum();
-  showToast(`✨ Album ditukar! +${add} Item. Full Member ke-${G.fullKabesha}!`);
+  showToast(`Album ditukar! +${add} Item. Full Member ke-${G.fullKabesha}!`);
 }
-  
-
 
 // ── GACHA ────────────────────────────────────────────────────
 let gachaAnim = false;
@@ -228,7 +217,7 @@ function enterProfil() {
   const statusEl = document.getElementById('pr-cycle-status');
   if (statusEl) {
     if (siklus === 17) {
-      statusEl.textContent = '✅ Siklus selesai!';
+      statusEl.textContent = 'Siklus selesai!';
       statusEl.style.color = 'var(--gold)';
     } else {
       statusEl.textContent = `(${17 - siklus} sesi lagi)`;
@@ -239,31 +228,66 @@ function enterProfil() {
   buildLeaderboard();
 }
 
-// ── LEADERBOARD ──────────────────────────────────────────────
-function buildLeaderboard() {
-  const users = allUsers()
-    .map(u => { const s = load(u); return s ? { name: s.username, pts: s.totalPoints || 0, shows: s.successShows, full: s.fullKabesha || 0 } : null; })
-    .filter(Boolean)
-    .sort((a, b) => b.pts - a.pts)
-    .slice(0, 10);
-
+// ── LEADERBOARD — load dari Firebase cloud ───────────────────
+async function buildLeaderboard() {
   const el = document.getElementById('lb-list');
   if (!el) return;
+  el.innerHTML = '<div style="color:var(--muted);font-size:.75rem;text-align:center;padding:10px">Memuat...</div>';
+
+  // Coba load dari cloud Firebase
+  var allData = [];
+  try {
+    if (typeof loadAllPlayers === 'function') {
+      allData = await loadAllPlayers();
+    }
+  } catch(e) {
+    console.warn('loadAllPlayers gagal:', e);
+  }
+
+  // Fallback ke localStorage kalau cloud kosong/gagal
+  if (!allData || allData.length === 0) {
+    allData = allUsers()
+      .map(function(u) {
+        try {
+          var r = localStorage.getItem('jkt48_v3_' + u);
+          return r ? JSON.parse(r) : null;
+        } catch(e) { return null; }
+      })
+      .filter(Boolean);
+  }
+
+  var users = allData
+    .map(function(s) {
+      return s ? {
+        name:  s.username,
+        pts:   s.totalPoints || s.points || 0,
+        shows: s.successShows || 0,
+        full:  s.fullKabesha || 0
+      } : null;
+    })
+    .filter(Boolean)
+    .sort(function(a, b) { return b.pts - a.pts; })
+    .slice(0, 10);
 
   if (users.length === 0) {
     el.innerHTML = '<div style="color:var(--muted);font-size:.75rem;text-align:center;padding:10px">Belum ada pemain</div>';
     return;
   }
 
-  const medals = ['gold-r', 'silver-r', 'bronze-r'];
-  el.innerHTML = users.map((u, i) => `
-    <div class="lb-row">
-      <div class="lb-rank ${medals[i] || ''}">${i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : i + 1}</div>
-      <div class="lb-name">${u.name === G.username ? u.name + ' (kamu)' : u.name.charAt(0) + '*'.repeat(u.name.length - 1)}</div>
-      <div>
-        <div class="lb-pts">${u.pts} poin</div>
-        <div class="lb-shows">${u.shows} show</div>
-        <div class="lb-shows">Full Member: ${u.full} x</div>
-      </div>
-    </div>`).join('');
+  var medals = ['gold-r', 'silver-r', 'bronze-r'];
+  el.innerHTML = users.map(function(u, i) {
+    var rank = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i + 1);
+    var nameDisplay = u.name === G.username
+      ? u.name + ' (kamu)'
+      : u.name.charAt(0) + '*'.repeat(u.name.length - 1);
+    return '<div class="lb-row">' +
+      '<div class="lb-rank ' + (medals[i] || '') + '">' + rank + '</div>' +
+      '<div class="lb-name">' + nameDisplay + '</div>' +
+      '<div>' +
+        '<div class="lb-pts">' + u.pts + ' poin</div>' +
+        '<div class="lb-shows">' + u.shows + ' show</div>' +
+        '<div class="lb-shows">Full Member: ' + u.full + ' x</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
 }

@@ -86,3 +86,4 @@ function enterGame() {
   buildAlbum();
   gotoPage('jeda');
 }
+

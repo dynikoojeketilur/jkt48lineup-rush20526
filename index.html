@@ -7,6 +7,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <title>JKT48 Line Up Rush</title><!-- ← Ganti judul tab browser di sini -->
   <link rel="stylesheet" href="styles/main.css">
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
@@ -247,6 +249,7 @@
 <!-- ══════════════════════════════════════════════════════════
      SCRIPTS — urutan loading PENTING, jangan diubah
 ══════════════════════════════════════════════════════════ -->
+<script src="scripts/firebase.js"></script>
 <script src="data/members.js"></script>   <!-- 1. Data member & gambar -->
 <script src="models/state.js"></script>    <!-- 2. Konstanta & save/load -->
 <script src="scripts/router.js"></script>  <!-- 3. Navigasi halaman -->
