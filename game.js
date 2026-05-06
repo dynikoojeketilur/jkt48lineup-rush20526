@@ -309,11 +309,11 @@ function showMaintenanceApology(oldVersion) {
       <div class="endgame-title">MOHON MAAF 🙏</div>
       <div class="endgame-message">
         Kami mohon maaf atas gangguan teknis sebelumnya.<br><br>
-        Data versi <strong>${oldVersion}</strong> tidak dapat digunakan setelah maintenance.<br><br>
+        Data pemain di versi sebelumnya tidak dapat digunakan dan tidak ada di game ini setelah maintenance.<br><br>
         Semua pemain harus <strong>mengumpulkan member dan poin dari awal lagi</strong>.<br><br>
         Terima kasih atas pengertiannya! 🙇
       </div>
-      <div class="endgame-oshi">~ JKT48 Operation Team ~</div>
+      <div class="endgame-oshi">~ Dydrmwn & Team ~</div>
       <button class="endgame-btn reset-btn" onclick="clearOldDataAndReset()">MULAI BARU 🎮</button>
     </div>
   `;
