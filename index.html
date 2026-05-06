@@ -5,190 +5,121 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#0C0E1A">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <title>JKT48 Line Up Rush</title>
-  <link rel="stylesheet" href="styles/main.css">
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <title>JKT48 Line Up Rush - 48 Hari Theater</title>
+  <link rel="stylesheet" href="main.css">
 </head>
 <body>
-<div id="maintenance" style="position:fixed;inset:0;background:#0C0E1A;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;font-family:'Bebas Neue',sans-serif;text-align:center;padding:20px;">
-  <div style="font-size:3rem;margin-bottom:16px">🔧</div>
-  <div style="font-size:clamp(1.5rem,7vw,2.5rem);letter-spacing:4px;color:#FF4E8B;">MAINTENANCE</div>
-  <div style="font-size:clamp(1rem,4vw,1.4rem);letter-spacing:3px;color:#90CAF9;margin-top:8px;">JKT48 LINE UP RUSH</div>
-  <div style="font-size:.85rem;color:#7A7A9A;margin-top:16px;line-height:1.6;">
-    Game sedang dalam perbaikan.<br>Data kamu aman, mohon bersabar🙏
-  </div>
-  <div style="font-size:.8rem;color:#FFD54F;margin-top:12px;">
-    Estimasi selesai: Sampai Waktu Ditentukan🙂
-  </div>
-</div>
-<!-- ══════════════════════════════════════════════════════════
-     PAGE: LOGIN
-══════════════════════════════════════════════════════════ -->
+
+<!-- PAGE LOGIN -->
 <div class="pv auth-wrap" id="page-login">
   <div class="auth-logo">
-    <!-- ↓ Ganti nama judul game di sini -->
     <div class="auth-logo-title">JKT48<br>LINE UP RUSH</div>
-    <div class="auth-logo-sub">THEATER MANAGEMENT GAME</div>
+    <div class="auth-logo-sub">Management Theater Game</div>
   </div>
   <div class="auth-card">
     <h2>MASUK</h2>
-    <label class="fl" for="li-u">Username</label>
-    <input class="fi" id="li-u" type="text" placeholder="username kamu..." maxlength="20" autocomplete="off">
+    <label class="fl">Username</label>
+    <input class="fi" id="li-u" type="text" placeholder="username kamu..." maxlength="20">
     <div class="fe" id="li-err"></div>
     <button class="btn-prim" onclick="doLogin()">LOGIN</button>
     <div class="auth-sw">Belum punya akun? <a onclick="gotoPage('register')">Daftar di sini</a></div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════════════════
-     PAGE: REGISTER
-══════════════════════════════════════════════════════════ -->
-<div class="pv auth-wrap" id="page-register" style="justify-content:flex-start">
+<!-- PAGE REGISTER -->
+<div class="pv auth-wrap" id="page-register">
   <div class="auth-logo" style="margin-top:18px">
     <div class="auth-logo-title">JKT48<br>LINE UP RUSH</div>
     <div class="auth-logo-sub">DAFTAR AKUN BARU</div>
   </div>
   <div class="auth-card" style="margin:16px 0 24px">
     <h2>DAFTAR</h2>
-    <label class="fl" for="re-u">Username</label>
-    <input class="fi" id="re-u" type="text" placeholder="buat username unikmu..." maxlength="20" autocomplete="off">
+    <label class="fl">Username</label>
+    <input class="fi" id="re-u" type="text" placeholder="buat username unikmu..." maxlength="20">
     <label class="fl">Pilih Oshi-mu</label>
-    <div class="oshi-wrap">
-      <div id="oshi-list"></div>
-    </div>
+    <div class="oshi-wrap"><div id="oshi-list"></div></div>
     <div class="fe" id="re-err"></div>
     <button class="btn-prim" onclick="doRegister()">BUAT AKUN &amp; MAIN!</button>
     <div class="auth-sw">Sudah punya akun? <a onclick="gotoPage('login')">Login di sini</a></div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════════════════
-     TOP BAR (muncul saat di dalam game)
-══════════════════════════════════════════════════════════ -->
+<!-- TOP BAR -->
 <div id="top-bar" style="display:none">
-  
   <div class="hud-title">JKT48 RUSH</div>
   <div class="hud-chips">
-    <div class="hc">Hari <b id="hd">1</b></div>
+    <div class="hc">Hari <b id="hd">1</b>/<b id="hdMax">48</b></div>
     <div class="hc">Show <b id="hs">1</b>/<b id="hms">1</b></div>
     <div class="hc">⭐ <b id="hp">0</b></div>
-    <div id="timer-display" style="display:none">70</div>
+    <div id="timer-display" style="display:none">50</div>
   </div>
 </div>
 
-
+<!-- BOTTOM NAV -->
 <div id="bottom-nav" style="display:none">
-  <button class="bnb" data-p="jeda"    onclick="navTo('jeda')">
-    <span class="ni">🏠</span>Lobby
-  </button>
-  <button class="bnb" data-p="kabesha" onclick="navTo('kabesha')">
-    <span class="ni">📚</span>Member
-  </button>
-  <button class="bnb" data-p="gacha"   onclick="navTo('gacha')">
-    <span class="ni">🎴</span>Gacha
-  </button>
-  <button class="bnb" data-p="profil"  onclick="navTo('profil')">
-    <span class="ni">👤</span>Profil
-  </button>
+  <button class="bnb" data-p="jeda" onclick="navTo('jeda')"><span class="ni">🏠</span>Lobby</button>
+  <button class="bnb" data-p="kabesha" onclick="navTo('kabesha')"><span class="ni">📚</span>Member</button>
+  <button class="bnb" data-p="gacha" onclick="navTo('gacha')"><span class="ni">🎴</span>Gacha</button>
+  <button class="bnb" data-p="profil" onclick="navTo('profil')"><span class="ni">👤</span>Profil</button>
 </div>
 
-<!-- ══════════════════════════════════════════════════════════
-     PAGE: JEDA (lobby antara show)
-══════════════════════════════════════════════════════════ -->
-<div class="pv" id="page-jeda"
-     style="background:linear-gradient(160deg,#08001a 0%,#0a1030 55%,#180a00 100%);align-items:center;justify-content:center;padding:20px">
+<!-- PAGE JEDA -->
+<div class="pv" id="page-jeda">
   <div class="jeda-inner">
-    <div class="jeda-title"  id="jeda-title">JKT48 LINE UP RUSH</div>
-    <div class="jeda-desc"   id="jeda-desc">Ayoo mulai susun line up show!!</div>
-    <div class="jeda-stats"  id="jeda-stats" style="display:none">
+    <div class="jeda-title" id="jeda-title">JKT48 LINE UP RUSH</div>
+    <div class="jeda-desc" id="jeda-desc">Ayoo mulai susun line up show!!</div>
+    <div class="jeda-stats" id="jeda-stats" style="display:none">
       <div class="jeda-stat"><div class="v" id="jst-day">1</div><div class="l">Hari</div></div>
-      <div class="jeda-stat"><div class="v" id="jst-show">0</div><div class="l">Show Selesai</div></div>
+      <div class="jeda-stat"><div class="v" id="jst-show">0</div><div class="l">Show Berhasil</div></div>
       <div class="jeda-stat"><div class="v" id="jst-pts">0</div><div class="l">Poin</div></div>
       <div class="jeda-stat"><div class="v" id="jst-col">0</div><div class="l">Member</div></div>
     </div>
     <button class="btn-start" id="btn-mulai" onclick="doMulai()">MULAI</button>
-    <div style="font-size:.65rem;color:var(--muted);margin-top:-6px" id="jeda-hint">
-      Pertama kali? Langsung main deh!
-    </div>
+    <div style="font-size:.65rem;color:var(--muted);margin-top:-6px" id="jeda-hint">Pertama kali? Langsung main deh!</div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════════════════
-     PAGE: SHOW (layar permainan)
-══════════════════════════════════════════════════════════ -->
+<!-- PAGE SHOW -->
 <div class="pv" id="page-show">
   <div class="game-content-full">
     <div class="show-inner">
-
-      <!-- Banner target tim -->
-      <div id="target-banner" class="target-banner team-passion">Team Passion (Passion 200%)</div>
-
-      <!-- 16 slot lineup -->
+      <div id="target-banner" class="target-banner team-passion">Team Passion</div>
       <div class="lineup-wrap">
-        <div class="lineup-row-label">
-          <span>LINE-UP MALAM INI</span>
-          <span id="slot-count">0 / 15</span>
-        </div>
+        <div class="lineup-row-label"><span>LINE-UP MALAM INI</span><span id="slot-count">0 / 15</span></div>
         <div class="lineup-grid" id="lineup-grid"></div>
       </div>
-
-      <!-- Item & siklus oshi -->
       <div class="items-bar">
-        <button class="item-btn" id="btn-item" onclick="useFlip5()">
-          👁 Balik 5 Detik <span class="icnt" id="item-cnt">0</span>
-        </button>
+        <button class="item-btn" id="btn-item" onclick="useFlip5()">👁 Balik 5 Detik <span class="icnt" id="item-cnt">0</span></button>
         <div class="cycle-info">Siklus Oshi: <b id="cy">1</b>/17</div>
       </div>
-
-      <!-- Papan 24 kartu -->
-      <div class="board-header">
-        <h3>KARTU MEMBER (24)</h3>
-        <button class="btn-shuffle" onclick="shuffleBoard()">🔀 Acak</button>
-      </div>
+      <div class="board-header"><h3>KARTU MEMBER (24)</h3><button class="btn-shuffle" onclick="shuffleBoard()">🔀 Acak</button></div>
       <div class="card-grid" id="card-grid"></div>
-
     </div>
   </div>
 </div>
 
-
+<!-- PAGE KABESHA (ALBUM) -->
 <div class="pv" id="page-kabesha">
   <div class="game-content">
     <div class="kabesha-inner">
-      <div class="kab-header">
-        <h2>📚 KOLEKSI MEMBER</h2>
-        <button class="btn-exchange" id="btn-exchange" onclick="doExchange()" disabled>
-          Tukar Duplikat
-        </button>
-      </div>
-      
+      <div class="kab-header"><h2>📚 KOLEKSI MEMBER</h2><button class="btn-exchange" id="btn-exchange" onclick="doExchange()" disabled>Tukar Duplikat</button></div>
       <div class="afb-bar">
         <button class="afb all active" onclick="filtAlbum('all',this)">Semua</button>
-        <button class="afb love"       onclick="filtAlbum('love',this)">Team Love 💗</button>
-        <button class="afb dream"      onclick="filtAlbum('dream',this)">Team Dream ⭐</button>
-        <button class="afb passion"    onclick="filtAlbum('passion',this)">Team Passion 🔥</button>
+        <button class="afb love" onclick="filtAlbum('love',this)">Team Love 💗</button>
+        <button class="afb dream" onclick="filtAlbum('dream',this)">Team Dream ⭐</button>
+        <button class="afb passion" onclick="filtAlbum('passion',this)">Team Passion 🔥</button>
       </div>
       <div class="album-grid" id="album-grid"></div>
     </div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════════════════
-     PAGE: GACHA
-══════════════════════════════════════════════════════════ -->
+<!-- PAGE GACHA -->
 <div class="pv" id="page-gacha">
   <div class="game-content">
     <div class="gacha-inner">
       <div class="gacha-title">✦ GACHA MEMBER ✦</div>
-      <div id="gacha-card-area">
-        <div style="text-align:center;z-index:1">
-          <div style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:rgba(255,255,255,.18);letter-spacing:3px">
-            JKT<span style="color:rgba(30,136,229,.45)">48</span>
-          </div>
-          <div style="font-size:1.8rem;color:rgba(255,255,255,.07);margin-top:6px">✦</div>
-        </div>
-      </div>
+      <div id="gacha-card-area"><div style="text-align:center"><div style="font-family:'Bebas Neue';font-size:1.2rem;color:rgba(255,255,255,.18)">JKT<span style="color:rgba(30,136,229,.45)">48</span></div></div></div>
       <div id="gacha-rname"></div>
       <div class="gacha-pts">Poin: <b id="gacha-pts">0</b></div>
       <button class="btn-gacha" id="btn-gacha" onclick="onGachaClick()">GACHA — 50 Poin</button>
@@ -196,89 +127,80 @@
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════════════════
-     PAGE: PROFIL
-══════════════════════════════════════════════════════════ -->
+<!-- PAGE PROFIL -->
 <div class="pv" id="page-profil">
   <div class="game-content">
     <div class="profil-inner">
       <div class="prof-hero">
         <div class="ph-name" id="pr-name">-</div>
         <div class="ph-oshi">Oshi: <b id="pr-oshi">-</b></div>
-<div class="ph-oshi" style="margin-top:6px">
-  Siklus Oshi: <b id="pr-cycle">1 / 17</b>
-  <span id="pr-cycle-status" style="margin-left:6px;font-size:.7rem"></span>
-</div>
+        <div class="ph-oshi" style="margin-top:6px">Siklus Oshi: <b id="pr-cycle">1 / 17</b></div>
       </div>
       <div class="stats-grid">
-        <div class="sc"><div class="sv" id="pr-pts">0</div><div class="sl">Total Poin</div></div>
+        <div class="sc"><div class="sv" id="pr-pts">0</div><div class="sl">Poin Saat Ini</div></div>
         <div class="sc"><div class="sv" id="pr-day">1</div><div class="sl">Hari</div></div>
         <div class="sc"><div class="sv" id="pr-ok">0</div><div class="sl">Show Berhasil</div></div>
         <div class="sc"><div class="sv" id="pr-tot">0</div><div class="sl">Total Show</div></div>
         <div class="sc"><div class="sv" id="pr-col">0</div><div class="sl">Member Koleksi</div></div>
-        <div class="sc"><div class="sv">45</div><div class="sl">Total Member</div></div>
+        <div class="sc"><div class="sv" id="pr-avg">0</div><div class="sl">Rata-rata Poin</div></div>
       </div>
-      <!-- Leaderboard -->
       <div class="lb-wrap">
-        <div class="lb-title">🏆 LEADERBOARD</div>
-        <div id="lb-list"></div>
+        <div class="lb-title">🎯 TARGET 48 HARI</div>
+        <div style="padding:12px; text-align:center">
+          <div style="font-size:1.2rem; color:var(--gold)" id="pr-target">1 / 48</div>
+          <div style="font-size:0.65rem; color:var(--muted); margin-top:6px">Capai hari ke-48 untuk menyelesaikan perjalanan theater-mu!</div>
+        </div>
       </div>
+      
+      <!-- TOMBOL PENGUMUMAN MAINTENANCE -->
+      <button class="btn-maintenance" onclick="showMaintenanceAnnouncement()">
+        🔧 INFO MAINTENANCE
+      </button>
+      
       <button class="btn-logout" onclick="doLogout()">🚪 LOG OUT</button>
     </div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════════════════
-     OVERLAY: Show Berhasil
-══════════════════════════════════════════════════════════ -->
+<!-- OVERLAYS -->
 <div class="ov" id="overlay-overture">
   <div class="ov-main">J! K! T! 48!<br>whoo!</div>
   <div class="ov-sub">"Everybody Alive like you never seen before..."</div>
   <div class="ov-pts">+ <span id="ov-pts">0</span> poin ✨</div>
   <button class="btn-ov" id="btn-ov-next">LANJUT ▶</button>
 </div>
-
-<!-- ══════════════════════════════════════════════════════════
-     OVERLAY: Show Batal
-══════════════════════════════════════════════════════════ -->
 <div class="ov" id="overlay-cancel">
   <div class="cancel-main">⚠ SHOW BATAL</div>
   <div class="cancel-sub">fans : yah... 😞</div>
   <button class="btn-ov" id="btn-cancel-next">SHOW SELANJUTNYA ▶</button>
 </div>
-
-
 <div id="toast"></div>
 
-
-<script src="scripts/firebase.js"></script>
-<script src="data/members.js"></script>   
-<script src="models/state.js"></script>    
-<script src="scripts/router.js"></script> 
-<script src="scripts/ui.js"></script>      
-<script src="scripts/game.js"></script>    
-<script src="scripts/login.js"></script>  
-<script src="scripts/logout.js"></script>  
+<script src="members.js"></script>
+<script src="state.js"></script>
+<script src="game.js"></script>
+<script src="ui.js"></script>
+<script src="router.js"></script>
+<script src="login.js"></script>
+<script src="logout.js"></script>
 
 <script>
- 
   window.addEventListener('DOMContentLoaded', () => {
-    buildOshiList(); 
-
-    
+    buildOshiList();
     const lu = lastUser();
     if (lu) {
       const sv = load(lu);
       if (sv) {
         G = sv;
         window.G = G;
-        enterGame();
+        updateHUD();
+        buildAlbum();
+        gotoPage('jeda');
         return;
       }
     }
     gotoPage('login');
   });
 </script>
-
 </body>
 </html>
